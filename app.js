@@ -80,27 +80,18 @@ const menu = [
     img: './images/item-10.jpeg',
     desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
   },
-]
+];
 
 const sectionCenter = document.querySelector('.section-center');
-const filterBtns = document.querySelectorAll('.filter-btn');
+const container = document.querySelector('.btn-container');
 
 // load items
 window.addEventListener('DOMContentLoaded', function () {
-  displayMenuItems(menu)
-  const categories = menu.reduce(
-    function(values, item){
-      if(!values.includes(item.category)) {
-        values.push(item.category);
-      }
-      return values;
-
-  }, ["all"]);
-console.log(categories);
+  displayMenuItems(menu);
+  displayMenuButton();
 });
 
 //filter items
-
 filterBtns.forEach(function (btn) {
   btn.addEventListener('click', function (e) {
     const category = e.currentTarget.dataset.id;
@@ -108,15 +99,15 @@ filterBtns.forEach(function (btn) {
       if (menuItem.category === category) {
         return menuItem;
       }
-    })
+    });
     if (category === 'all') {
       displayMenuItems(menu);
     } else {
       displayMenuItems(menuCategory);
     }
     //console.log(menuCategory)
-  })
-})
+  });
+});
 
 function displayMenuItems(menuItems) {
   let displayMenu = menuItems.map(function (item) {
@@ -132,11 +123,52 @@ function displayMenuItems(menuItems) {
               ${item.desc}
              </p>
             </div>
-           </article>`
+           </article>`;
   });
 
   displayMenu = displayMenu.join('');
   sectionCenter.innerHTML = displayMenu;
 
   // console.log(displayMenu)
+}
+
+function displayMenuButton() {
+  const categories = menu.reduce(
+    function (values, item) {
+      if (!values.includes(item.category)) {
+        values.push(item.category);
+      }
+      return values;
+    },
+    ['all']
+  );
+
+  // getting the buttons
+  const categoryBtns = categories
+    .map(function (category) {
+      return `<button type="button" class="filter-btn" data-id=${category}>
+      ${category}
+      </button>`;
+    })
+    .join('');
+  container.innerHTML = categoryBtns;
+  const filterBtns = container.querySelectorAll('.filter-btn');
+
+  //filter items
+  filterBtns.forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      const category = e.currentTarget.dataset.id;
+      const menuCategory = menu.filter(function (menuItem) {
+        if (menuItem.category === category) {
+          return menuItem;
+        }
+      });
+      if (category === 'all') {
+        displayMenuItems(menu);
+      } else {
+        displayMenuItems(menuCategory);
+      }
+      //console.log(menuCategory)
+    });
+  });
 }
